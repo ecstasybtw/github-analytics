@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'tracker.apps.TrackerConfig',
     'django.contrib.staticfiles',
     'crispy_forms',
-    'crispy-boostrap5',
+    'crispy_bootstrap5',
     'allauth',
     'allauth.account',
     'django.contrib.sites',
