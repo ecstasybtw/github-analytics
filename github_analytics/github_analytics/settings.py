@@ -47,13 +47,14 @@ INSTALLED_APPS = [
     'analytics.apps.AnalyticsConfig',
     'accounts.apps.AccountsConfig',
     'dashboard.apps.DashboardConfig',
-    'github.apps.GithubConfig',
+    'integrations.apps.IntegrationsConfig',
     'tracker.apps.TrackerConfig',
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
     'allauth',
     'allauth.account',
+    "allauth.socialaccount",
     'django.contrib.sites',
     'allauth.socialaccount.providers.github',
 ]
@@ -66,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'github_analytics.urls'
@@ -87,7 +89,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'github_analytics.wsgi.application'
 
-
+SITE_ID = 1
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 if os.getenv('DB_NAME'):
