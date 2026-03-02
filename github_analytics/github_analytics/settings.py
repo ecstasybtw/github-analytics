@@ -88,6 +88,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'github_analytics.wsgi.application'
+SOCIALACCOUNT_STORE_TOKENS = True
 
 SITE_ID = 1
 # Database
