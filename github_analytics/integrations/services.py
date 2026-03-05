@@ -48,8 +48,6 @@ def _get_headers(token) -> dict[str, str]:
 
 
 def _get_repo_params(
-        visibility:str = 'all',
-        affiliation:str = 'owner,collaborator,organization_member',
         type:str = 'all',
         sort: str = 'full_name',
         direction: str = 'asc',
@@ -58,8 +56,6 @@ def _get_repo_params(
 ) -> dict[str, Any]:
 
     params = {
-        'visibility': visibility,
-        'affiliation': affiliation,
         'type': type,
         'sort': sort,
         'direction': direction,
@@ -87,7 +83,7 @@ def _request(user, endpoint: str, method: str, params: dict[Any, Any] | None = N
         raise GitHubNoTokenException
 
 
-def get_user(user):
+def get_user(user) -> GitHubUser | None:
     try:
         payload = _request(user=user, endpoint=CURRENT_AUTH_USER, method='GET')
     except (GitHubNoTokenException, GitHubJSONException):
@@ -114,17 +110,13 @@ def get_user(user):
 
 def get_repos(
         user,
-        visibility: str = 'all',
-        affiliation: str = 'owner,collaborator,organization_member',
         type: str = 'all',
         sort: str = 'full_name',
         direction: str = 'asc',
         per_page: int = 30,
         page: int = 1,
-) -> list[dict]:
+) -> list[GitHubRepo]:
     params = _get_repo_params(
-        visibility=visibility,
-        affiliation=affiliation,
         type=type,
         sort=sort,
         direction=direction,
