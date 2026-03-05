@@ -20,5 +20,6 @@ import allauth
 
 urlpatterns = [
     path('accounts/', include('accounts.urls')),
+    path('integrations/', include('integrations.urls')),
     path('admin/', admin.site.urls),
 ]
