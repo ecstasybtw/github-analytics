@@ -1,5 +1,6 @@
 from django.db import IntegrityError, transaction
 from django.utils.dateparse import parse_datetime
+from django.forms.models import model_to_dict
 import requests
 from typing import Any
 from .models import GitHubUser, GitHubRepo
@@ -161,6 +162,25 @@ def get_repos(
         return dct
 
     return []
+
+def sync_all(user):
+    try:
+        user_obj = get_user(user)
+    except GitHubNoTokenException:
+        raise
+
+    try:
+        repos_obj = get_repos(user)
+    except GitHubNoTokenException:
+        raise
+
+    dct = {
+        user_obj.github_user_id: [
+            model_to_dict(item) for item in repos_obj
+        ]
+    }
+
+    return dct
 
 
 

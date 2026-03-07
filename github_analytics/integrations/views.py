@@ -1,9 +1,11 @@
 from django.shortcuts import render
-from .services import get_repos, get_user
-from django.http import JsonResponse
+from .services import get_repos, get_user, sync_all
+from django.http import JsonResponse, HttpResponseNotAllowed
 from django.forms.models import model_to_dict
+from django.views.decorators.http import require_POST
 
 
+@require_POST
 def sync_user_view(request):
     obj = get_user(request.user)
 
@@ -16,12 +18,26 @@ def sync_user_view(request):
     return JsonResponse(data)
 
 
+@require_POST
 def sync_repos_view(request):
     dct = get_repos(request.user)
 
     response = {}
 
     for repo in dct:
-        response[repo.id] = model_to_dict(repo)
+        response[repo.github_repo_id] = model_to_dict(repo)
 
     return JsonResponse(response)
+
+
+def sync_all_view(request):
+    if request.method == "POST":
+        dct = sync_all(request.user)
+
+        return JsonResponse(dct)
+
+    elif request.method == "GET":
+            return render(request, 'integrations/synchronize.html')
+
+    else:
+        return HttpResponseNotAllowed(["GET", "POST"])
