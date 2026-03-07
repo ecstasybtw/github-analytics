@@ -37,7 +37,10 @@ def sync_all_view(request):
         return JsonResponse(dct)
 
     elif request.method == "GET":
-            return render(request, 'integrations/synchronize.html')
+            return render(
+                request=request,
+                template_name='integrations/synchronize.html'
+            )
 
     else:
         return HttpResponseNotAllowed(["GET", "POST"])
