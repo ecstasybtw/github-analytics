@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .services import get_repos, get_user, sync_all
+from .services import get_repos, get_user, sync_all, _get_metrics
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.forms.models import model_to_dict
 from django.views.decorators.http import require_POST
@@ -44,3 +44,4 @@ def sync_all_view(request):
 
     else:
         return HttpResponseNotAllowed(["GET", "POST"])
+

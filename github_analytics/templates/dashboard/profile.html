@@ -19,6 +19,49 @@
         </div>
     </div>
 
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <p class="small text-muted mb-1">Repositories</p>
+                    <p class="h5 mb-0">{{ metrics.repos_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <p class="small text-muted mb-1">Stars</p>
+                    <p class="h5 mb-0">{{ metrics.stars_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <p class="small text-muted mb-1">Forks</p>
+                    <p class="h5 mb-0">{{ metrics.forks_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-xl-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <p class="small text-muted mb-1">Open Issues</p>
+                    <p class="h5 mb-0">{{ metrics.open_issues_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-8 col-xl-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <p class="small text-muted mb-1">Last Repo Update</p>
+                    <p class="mb-0">{{ metrics.last_pushed_repo_at|default:"-" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-3">
         {% for repo in repos %}
             <div class="col-12 col-md-6 col-xl-4">

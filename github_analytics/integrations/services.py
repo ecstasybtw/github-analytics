@@ -22,7 +22,10 @@ class GitHubUserException(Exception):
     """Cannot get an authenticated user."""
 
 class GitHubJSONException(Exception):
-    """Some problems with JSON response from API"""
+    """Some problems with JSON response from API."""
+
+class GitHubNoReposException(Exception):
+    """User does not have any repos."""
 
 
 def _get_user_token(user):
@@ -181,6 +184,38 @@ def sync_all(user):
     }
 
     return dct
+
+
+def _get_metrics(user):
+    try:
+        github_profile = GitHubUser.objects.get(profile_owner=user)
+    except GitHubUser.DoesNotExist:
+        raise
+
+    repos = GitHubRepo.objects.filter(owner=github_profile).order_by('-pushed_at')
+
+    repos_count = repos.count()
+    stars_count = sum(repo.stargazers_count for repo in repos)
+    forks_count = sum(repo.forks_count for repo in repos)
+    open_issues_count = sum(repo.open_issues_count for repo in repos)
+
+    last_updated_repo = repos.first()
+    if last_updated_repo:
+        last_pushed_repo_at = last_updated_repo.updated_at
+    else:
+        last_pushed_repo_at = None
+
+
+    return {
+        'repos_count': repos_count,
+        'stars_count': stars_count,
+        'forks_count': forks_count,
+        'open_issues_count': open_issues_count,
+        'last_pushed_repo_at': last_pushed_repo_at
+    }
+
+
+
 
 
 
