@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .services import get_repos, get_user, sync_all, _get_metrics
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.forms.models import model_to_dict
 from django.views.decorators.http import require_POST
+from django.contrib import messages
 
 
 @require_POST
@@ -33,8 +34,8 @@ def sync_repos_view(request):
 def sync_all_view(request):
     if request.method == "POST":
         dct = sync_all(request.user)
-
-        return JsonResponse(dct)
+        messages.success(request, 'Синхронизировано!')
+        return redirect('dashboard-profile')
 
     elif request.method == "GET":
             return render(
