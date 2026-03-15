@@ -65,27 +65,29 @@
     <div class="row g-3">
         {% for repo in repos %}
             <div class="col-12 col-md-6 col-xl-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h2 class="h6 mb-0">{{ repo.name }}</h2>
-                            {% if repo.private %}
-                                <span class="badge bg-dark">Private</span>
-                            {% else %}
-                                <span class="badge bg-success">Public</span>
-                            {% endif %}
+                <a href="{% url 'dashboard_repo_detail' repo.id %}" class="text-decoration-none text-dark d-block h-100">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h2 class="h6 mb-0">{{ repo.name }}</h2>
+                                {% if repo.private %}
+                                    <span class="badge bg-dark">Private</span>
+                                {% else %}
+                                    <span class="badge bg-success">Public</span>
+                                {% endif %}
+                            </div>
+                            <p class="small text-muted mb-2">{{ repo.full_name }}</p>
+                            <p class="small mb-3">{{ repo.description|default:"No description." }}</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge bg-light text-dark">Stars: {{ repo.stargazers_count }}</span>
+                                <span class="badge bg-light text-dark">Forks: {{ repo.forks_count }}</span>
+                                <span class="badge bg-light text-dark">Issues: {{ repo.open_issues_count }}</span>
+                            </div>
+                            <p class="small text-muted mb-1">Language: {{ repo.language|default:"-" }}</p>
+                            <p class="small text-muted mb-0">Updated: {{ repo.updated_at }}</p>
                         </div>
-                        <p class="small text-muted mb-2">{{ repo.full_name }}</p>
-                        <p class="small mb-3">{{ repo.description|default:"No description." }}</p>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge bg-light text-dark">Stars: {{ repo.stargazers_count }}</span>
-                            <span class="badge bg-light text-dark">Forks: {{ repo.forks_count }}</span>
-                            <span class="badge bg-light text-dark">Issues: {{ repo.open_issues_count }}</span>
-                        </div>
-                        <p class="small text-muted mb-1">Language: {{ repo.language|default:"-" }}</p>
-                        <p class="small text-muted mb-0">Updated: {{ repo.updated_at }}</p>
                     </div>
-                </div>
+                </a>
             </div>
         {% empty %}
             <div class="col-12">

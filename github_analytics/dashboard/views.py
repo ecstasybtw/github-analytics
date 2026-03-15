@@ -22,3 +22,12 @@ def profile_view(request):
         template_name='dashboard/profile.html',
         context=context
     )
+
+def repo_detail_view(request, pk):
+    repo = integration_models.GitHubRepo.objects.get(id=pk)
+
+    context = {
+        'repo': repo
+    }
+
+    return render(request, 'dashboard/repo_detail.html', context=context)
