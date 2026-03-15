@@ -34,3 +34,27 @@ class GitHubRepo(models.Model):
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
     pushed_at = models.DateTimeField()
+
+
+class GitHubPullRequest(models.Model):
+    pr_owner_login = models.CharField(max_length=128)
+    pr_owner_id = models.PositiveBigIntegerField(null=False)
+    repo = models.ForeignKey(
+        GitHubRepo,
+        on_delete=models.CASCADE
+    )
+    html_url = models.URLField(null=False)
+    github_id = models.PositiveBigIntegerField(null=False, unique=True)
+    number = models.IntegerField(null=False)
+    state = models.CharField(max_length=128)
+    locked = models.BooleanField()
+    title = models.CharField(max_length=256)
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
+    closed_at = models.DateTimeField(null=True)
+    merged_at = models.DateTimeField(null=True)
+    draft = models.BooleanField()
+    additions = models.IntegerField()
+    deletions = models.IntegerField()
+    changed_files = models.IntegerField()
+    commits = models.IntegerField()
