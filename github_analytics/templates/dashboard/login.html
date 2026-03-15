@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% block title %}Engineering Intelligence Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-9">
+            <div class="card border-0 shadow-lg overflow-hidden">
+                <div class="row g-0">
+                    <div class="col-md-6 bg-dark text-white p-5 d-flex flex-column justify-content-between">
+                        <div>
+                            <p class="text-uppercase small mb-3">Engineering Intelligence Platform</p>
+                            <h1 class="display-6 fw-bold mb-3">Наблюдай за тем, как реально работает разработка.</h1>
+                            <p class="mb-0 text-white-50">
+                                Анализируй скорость доставки, качество ревью, поток задач и устойчивость команды
+                                на основе активности в GitHub.
+                            </p>
+                        </div>
+                        <div class="pt-4">
+                            <div class="border-top border-secondary pt-4">
+                                <p class="small text-white-50 mb-2">Что ты получишь</p>
+                                <p class="mb-1">Метрики delivery и тренды throughput</p>
+                                <p class="mb-1">Узкие места ревью и сигналы задержек</p>
+                                <p class="mb-0">Движение backlog и инсайты по процессу</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 bg-light p-5 d-flex flex-column justify-content-center">
+                        <div class="mb-4">
+                            <span class="badge bg-primary mb-3">Аналитика на основе GitHub</span>
+                            <h2 class="h3 mb-3">Войди, чтобы начать анализировать процесс разработки в репозитории</h2>
+                            <p class="text-muted mb-0">
+                                Подключи GitHub, чтобы синхронизировать данные репозитория и рассчитать метрики инженерного процесса.
+                            </p>
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <a href="{% provider_login_url 'github' %}" class="btn btn-dark btn-lg">Продолжить через GitHub</a>
+                            <p class="small text-muted mb-0">
+                                В MVP анализируется один репозиторий. Сначала метрики процесса, затем более глубокая инженерная аналитика.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

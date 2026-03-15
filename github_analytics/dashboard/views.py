@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import integrations.models as integration_models
 from integrations.services import _get_metrics
 from django.views.decorators.http import require_GET
@@ -23,6 +23,7 @@ def profile_view(request):
         context=context
     )
 
+
 def repo_detail_view(request, pk):
     repo = integration_models.GitHubRepo.objects.get(id=pk)
 
@@ -31,3 +32,18 @@ def repo_detail_view(request, pk):
     }
 
     return render(request, 'dashboard/repo_detail.html', context=context)
+
+
+def landing_view(request):
+
+    context = {
+        'landing': True
+    }
+
+    if request.user.is_authenticated:
+        return redirect('dashboard-profile')
+
+    else:
+        return render(request, 'dashboard/login.html', context=context)
+
+
