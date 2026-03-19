@@ -3,7 +3,7 @@ from django.utils.dateparse import parse_datetime
 from django.forms.models import model_to_dict
 import requests
 from typing import Any
-from .models import GitHubUser, GitHubRepo
+from .models import GitHubUser, GitHubRepo, GitHubPullRequest
 try:
     from allauth.socialaccount.models import SocialToken
 except Exception:
@@ -13,6 +13,10 @@ except Exception:
 URL = 'https://api.github.com'
 CURRENT_AUTH_USER = '/user'
 CURRENT_AUTH_USER_REPOS = '/user/repos'
+
+
+def _build_pr_endpoint(owner, repo):
+    return f'/repos/{owner}/{repo}/pulls'
 
 
 class GitHubNoTokenException(Exception):
@@ -68,6 +72,33 @@ def _get_repo_params(
     }
 
     return params
+
+def _get_pr_params(
+        state:str = 'all',
+        head:str = None,
+        base:str = None,
+        sort:str = 'created',
+        direction:str = 'desc',
+        per_page:int = 30,
+        page:int = 1
+) -> dict[str, Any]:
+
+    params = {
+        'state': state,
+        'head': head,
+        'base': base,
+        'sort': sort,
+        'direction': direction,
+        'per_page': per_page,
+        'page': page
+    }
+
+    filtered_params = {
+        key: value for key, value in params.items() if value is not None
+    }
+
+    return filtered_params
+
 
 
 def _request(user, endpoint: str, method: str, params: dict[Any, Any] | None = None) -> dict[Any, Any] | None:
@@ -213,6 +244,53 @@ def _get_metrics(user):
         'open_issues_count': open_issues_count,
         'last_pushed_repo_at': last_pushed_repo_at
     }
+
+
+def _get_pull_requests(user, repo):
+    params = _get_pr_params()
+
+    try:
+        payload = _request(user=user, endpoint=_build_pr_endpoint(repo.owner.login, repo.name), params=params, method='GET')
+    except (GitHubNoTokenException, GitHubJSONException):
+        raise
+
+    if payload:
+        dct = []
+
+        with transaction.atomic():
+            for pr in payload:
+                github_pr_id = pr['id']
+
+                obj, created = GitHubPullRequest.objects.update_or_create(
+                    github_id=github_pr_id,
+                    defaults={
+                        'pr_owner_login': pr['user']['login'],
+                        'pr_owner_id': pr['user']['id'],
+                        'repo': repo,
+                        'html_url': pr['html_url'],
+                        'number': pr['number'],
+                        'state': pr['state'],
+                        'locked': pr['locked'],
+                        'title': pr['title'],
+                        'created_at': parse_datetime(pr['created_at']) if pr['created_at'] else None,
+                        'updated_at': parse_datetime(pr['updated_at']) if pr['updated_at'] else None,
+                        'closed_at': parse_datetime(pr['closed_at']) if pr['closed_at'] else None,
+                        'merged_at': parse_datetime(pr['merged_at']) if pr['merged_at'] else None,
+                        'draft': pr['draft'],
+                        'additions': pr['additions'],
+                        'deletions': pr['deletions'],
+                        'changed_files': pr['changed_files'],
+                        'commits': pr['commits']
+                    }
+                )
+
+                dct.append(obj)
+
+        return dct
+
+    return []
+
+
 
 
 
