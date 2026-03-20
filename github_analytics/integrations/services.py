@@ -3,7 +3,7 @@ from django.utils.dateparse import parse_datetime
 from django.forms.models import model_to_dict
 import requests
 from typing import Any
-from .models import GitHubUser, GitHubRepo, GitHubPullRequest
+from .models import GitHubUser, GitHubRepo, GitHubPullRequest, GitHubPRReview
 try:
     from allauth.socialaccount.models import SocialToken
 except Exception:
@@ -15,7 +15,10 @@ CURRENT_AUTH_USER = '/user'
 CURRENT_AUTH_USER_REPOS = '/user/repos'
 
 
-def _build_pr_endpoint(owner, repo):
+def _build_pr_endpoint(owner, repo, review=False, pull_number=None):
+    if review:
+        return f'/repos/{owner}/{repo}/pulls/{pull_number}/reviews'
+
     return f'/repos/{owner}/{repo}/pulls'
 
 
@@ -73,6 +76,7 @@ def _get_repo_params(
 
     return params
 
+
 def _get_pr_params(
         state:str = 'all',
         head:str = None,
@@ -99,6 +103,16 @@ def _get_pr_params(
 
     return filtered_params
 
+
+def _get_reviews_params(
+        per_page:int = 30,
+        page:int = 1
+):
+
+    return {
+        'per_page': per_page,
+        'page': page
+    }
 
 
 def _request(user, endpoint: str, method: str, params: dict[Any, Any] | None = None) -> dict[Any, Any] | None:
@@ -197,6 +211,7 @@ def get_repos(
 
     return []
 
+
 def sync_all(user):
     try:
         user_obj = get_user(user)
@@ -291,6 +306,45 @@ def _get_pull_requests(user, repo):
 
     return []
 
+
+def _get_reviews(user, pull_request: GitHubPullRequest, repo):
+    params = _get_reviews_params()
+
+    try:
+        payload = _request(
+            user=user,
+            endpoint=_build_pr_endpoint(owner=repo.owner.login, repo=repo.name, review=True, pull_number=pull_request.number),
+            params=params,
+            method='GET')
+    except (GitHubNoTokenException, GitHubJSONException):
+        raise
+
+    if payload:
+        dct = []
+
+        with transaction.atomic():
+            for review in payload:
+                github_id = review['id']
+
+                obj, created = GitHubPRReview.objects.update_or_create(
+                    pull_request=pull_request,
+                    github_id=github_id,
+                    defaults={
+                        'reviewer_id': review['user']['id'],
+                        'reviewer_login': review['user']['login'],
+                        'body': review['body'],
+                        'html_url': review['html_url'],
+                        'submitted_at': parse_datetime(review['submitted_at']) if review['submitted_at'] else None,
+                        'commit_id': review['commit_id'],
+                        'state': review['state']
+                    }
+                )
+
+                dct.append(obj)
+
+        return dct
+
+    return []
 
 
 

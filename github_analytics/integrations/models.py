@@ -71,5 +71,5 @@ class GitHubPRReview(models.Model):
     body = models.TextField(max_length=512, null=True)
     html_url = models.URLField()
     submitted_at = models.DateTimeField()
-    commit_id = models.CharField(max_length=256)
+    commit_id = models.CharField(max_length=256, null=True)
     state = models.CharField(max_length=64)
