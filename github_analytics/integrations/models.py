@@ -58,3 +58,18 @@ class GitHubPullRequest(models.Model):
     deletions = models.IntegerField()
     changed_files = models.IntegerField()
     commits = models.IntegerField()
+
+
+class GitHubPRReview(models.Model):
+    pull_request = models.ForeignKey(
+        GitHubPullRequest,
+        on_delete=models.CASCADE
+    )
+    github_id = models.PositiveBigIntegerField(null=False, unique=True)
+    reviewer_id = models.PositiveBigIntegerField(null=False)
+    reviewer_login = models.CharField(max_length=128)
+    body = models.TextField(max_length=512, null=True)
+    html_url = models.URLField()
+    submitted_at = models.DateTimeField()
+    commit_id = models.CharField(max_length=256)
+    state = models.CharField(max_length=64)

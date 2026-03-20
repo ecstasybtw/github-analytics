@@ -264,6 +264,7 @@ def _get_pull_requests(user, repo):
                 obj, created = GitHubPullRequest.objects.update_or_create(
                     github_id=github_pr_id,
                     defaults={
+                        'href': pr['url'],
                         'pr_owner_login': pr['user']['login'],
                         'pr_owner_id': pr['user']['id'],
                         'repo': repo,
