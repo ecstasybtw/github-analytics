@@ -15,9 +15,12 @@ CURRENT_AUTH_USER = '/user'
 CURRENT_AUTH_USER_REPOS = '/user/repos'
 
 
-def _build_pr_endpoint(owner, repo, review=False, pull_number=None):
+def _build_repo_endpoint(owner, repo, review=False, pull_number=None, issues=False):
     if review:
         return f'/repos/{owner}/{repo}/pulls/{pull_number}/reviews'
+
+    if issues:
+        return f'/repos/{owner}/{repo}/issues'
 
     return f'/repos/{owner}/{repo}/pulls'
 
@@ -301,6 +304,8 @@ def _get_pull_requests(user, repo):
                 )
 
                 dct.append(obj)
+
+                _get_reviews(user, pull_request=obj, repo=repo)
 
         return dct
 

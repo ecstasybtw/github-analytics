@@ -73,3 +73,23 @@ class GitHubPRReview(models.Model):
     submitted_at = models.DateTimeField()
     commit_id = models.CharField(max_length=256, null=True)
     state = models.CharField(max_length=64)
+
+
+class GitHubIssue(models.Model):
+    repo = models.ForeignKey(
+        GitHubRepo,
+        on_delete=models.CASCADE
+    )
+    github_id = models.PositiveBigIntegerField(null=False, unique=True)
+    html_url = models.URLField()
+    state = models.CharField(max_length=64)
+    title = models.CharField(max_length=256)
+    body = models.TextField(max_length=512, null=True)
+    author_id = models.PositiveBigIntegerField(null=False)
+    author_login = models.CharField(max_length=128)
+    closed_at = models.DateTimeField(null=True)
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
+    number = models.IntegerField()
+    comments = models.IntegerField()
+    
