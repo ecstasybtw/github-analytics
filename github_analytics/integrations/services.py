@@ -3,7 +3,7 @@ from django.utils.dateparse import parse_datetime
 from django.forms.models import model_to_dict
 import requests
 from typing import Any
-from .models import GitHubUser, GitHubRepo, GitHubPullRequest, GitHubPRReview
+from .models import GitHubUser, GitHubRepo, GitHubPullRequest, GitHubPRReview, GitHubIssue
 try:
     from allauth.socialaccount.models import SocialToken
 except Exception:
@@ -116,6 +116,43 @@ def _get_reviews_params(
         'per_page': per_page,
         'page': page
     }
+
+
+def _get_issues_params(
+        milestone:str = None,
+        state:str = 'all',
+        assignee:str = None,
+        type:str = None,
+        creator:str = None,
+        mentioned:str = None,
+        labels:list[Any] = None,
+        sort:str = 'created',
+        direction:str = 'desc',
+        since:str = None,
+        per_page:int = 30,
+        page:int = 1
+) -> dict[str, Any]:
+
+    params = {
+        'milestone' : milestone,
+        'state': state,
+        'assignee': assignee,
+        'type': type,
+        'creator': creator,
+        'mentioned': mentioned,
+        'labels': labels,
+        'sort': sort,
+        'direction': direction,
+        'since': since,
+        'per_page': per_page,
+        'page': page
+    }
+
+    filtered_params = {
+        key: value for key, value in params.items() if value is not None
+    }
+
+    return filtered_params
 
 
 def _request(user, endpoint: str, method: str, params: dict[Any, Any] | None = None) -> dict[Any, Any] | None:
@@ -268,7 +305,7 @@ def _get_pull_requests(user, repo):
     params = _get_pr_params()
 
     try:
-        payload = _request(user=user, endpoint=_build_pr_endpoint(repo.owner.login, repo.name), params=params, method='GET')
+        payload = _request(user=user, endpoint=_build_repo_endpoint(repo.owner.login, repo.name), params=params, method='GET')
     except (GitHubNoTokenException, GitHubJSONException):
         raise
 
@@ -318,7 +355,7 @@ def _get_reviews(user, pull_request: GitHubPullRequest, repo):
     try:
         payload = _request(
             user=user,
-            endpoint=_build_pr_endpoint(owner=repo.owner.login, repo=repo.name, review=True, pull_number=pull_request.number),
+            endpoint=_build_repo_endpoint(owner=repo.owner.login, repo=repo.name, review=True, pull_number=pull_request.number),
             params=params,
             method='GET')
     except (GitHubNoTokenException, GitHubJSONException):
@@ -351,6 +388,44 @@ def _get_reviews(user, pull_request: GitHubPullRequest, repo):
 
     return []
 
+
+def _get_issues(user, repo: GitHubRepo):
+    params = _get_issues_params()
+
+    try:
+        payload = _request(user=user, endpoint=_build_repo_endpoint(owner=repo.owner.login, repo=repo.name, issues=True), params=params, method='GET')
+    except (GitHubNoTokenException, GitHubJSONException):
+        raise
+
+    if payload:
+        dct = []
+        with transaction.atomic():
+            for issue in payload:
+                github_id = issue['id']
+
+                obj, created = GitHubIssue.objects.update_or_create(
+                    github_id=github_id,
+                    defaults={
+                        'repo': repo,
+                        'html_url': issue['html_url'],
+                        'state': issue['state'],
+                        'title': issue['title'],
+                        'body': issue['body'],
+                        'author_id': issue['user']['id'],
+                        'author_login': issue['user']['login'],
+                        'closed_at': parse_datetime(issue['closed_at']) if issue['closed_at'] else None,
+                        'created_at': parse_datetime(issue['created_at']) if issue['created_at'] else None,
+                        'updated_at': parse_datetime(issue['updated_at']) if issue['updated_at'] else None,
+                        'number': issue['number'],
+                        'comments': issue['comments']
+                    }
+                )
+
+                dct.append(obj)
+
+        return dct
+
+    return []
 
 
 

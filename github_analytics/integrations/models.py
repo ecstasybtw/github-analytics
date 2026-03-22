@@ -92,4 +92,3 @@ class GitHubIssue(models.Model):
     updated_at = models.DateTimeField()
     number = models.IntegerField()
     comments = models.IntegerField()
-    
