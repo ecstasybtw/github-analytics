@@ -20,6 +20,8 @@ class GitHubRepo(models.Model):
         GitHubUser,
         on_delete=models.CASCADE,
     )
+    github_owner_id = models.PositiveBigIntegerField(null=True)
+    github_owner_login = models.CharField(max_length=128, null=True)
     github_repo_id = models.PositiveBigIntegerField(unique=True)
     name = models.CharField(null=False, max_length=256)
     full_name = models.CharField(max_length=256)

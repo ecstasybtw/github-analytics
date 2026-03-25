@@ -9,12 +9,71 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <title>{% block title %} {% endblock %}</title>
+    <style>
+        :root {
+            --app-bg: #f6f7f9;
+            --app-surface: #ffffff;
+            --app-border: #e6e8ec;
+            --app-text: #111827;
+            --app-muted: #6b7280;
+        }
+
+        body {
+            background: var(--app-bg);
+            color: var(--app-text);
+        }
+
+        .app-navbar {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--app-border);
+        }
+
+        .app-brand {
+            letter-spacing: -0.02em;
+        }
+
+        .app-card {
+            background: var(--app-surface);
+            border: 1px solid var(--app-border);
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+        }
+
+        .app-section {
+            max-width: 1120px;
+        }
+
+        .app-muted {
+            color: var(--app-muted);
+        }
+
+        .repo-card {
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+
+        .repo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+            border-color: #d8dde6;
+        }
+
+        .stat-value {
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+        }
+
+        .filter-bar .btn {
+            border-radius: 999px;
+        }
+    </style>
 </head>
 <body>
     {% if not landing %}
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light app-navbar">
             <div class="container">
-                <a class="navbar-brand fw-bold" href="#">GitHub Analytics</a>
+                <a class="navbar-brand fw-bold app-brand" href="#">GitHub Analytics</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -49,7 +108,7 @@
     <div class="container py-3">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show app-section mx-auto" role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>

@@ -229,6 +229,8 @@ def get_repos(
                     github_repo_id=github_repo_id,
                     defaults={
                         'owner': github_owner,
+                        'github_owner_id': repo['owner']['id'],
+                        'github_owner_login': repo['owner']['login'],
                         'name': repo['name'],
                         'full_name': repo['full_name'],
                         'private': repo['private'],

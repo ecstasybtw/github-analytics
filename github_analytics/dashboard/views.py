@@ -6,9 +6,20 @@ from django.views.decorators.http import require_GET
 
 @require_GET
 def profile_view(request):
+    filter_param = request.GET.get('visibility')
+    affiliation_param = request.GET.get('affiliation')
 
     github_user = integration_models.GitHubUser.objects.get(profile_owner=request.user)
     repos = integration_models.GitHubRepo.objects.filter(owner=github_user).order_by('-updated_at', 'name')
+
+    if filter_param == 'private':
+        repos = repos.filter(private=True)
+    elif filter_param == 'public':
+        repos = repos.filter(private=False)
+
+    if affiliation_param == 'collaborator':
+        repos = repos.exclude(github_owner_id=github_user.github_user_id)
+
     metrics = _get_metrics(request.user)
 
     context = {
