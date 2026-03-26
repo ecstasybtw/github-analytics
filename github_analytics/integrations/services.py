@@ -15,12 +15,15 @@ CURRENT_AUTH_USER = '/user'
 CURRENT_AUTH_USER_REPOS = '/user/repos'
 
 
-def _build_repo_endpoint(owner, repo, review=False, pull_number=None, issues=False):
+def _build_repo_endpoint(owner, repo, review=False, pull_number=None, issues=False, single_repo=False):
     if review:
         return f'/repos/{owner}/{repo}/pulls/{pull_number}/reviews'
 
     if issues:
         return f'/repos/{owner}/{repo}/issues'
+
+    if single_repo:
+        return f'/repos/{owner}/{repo}'
 
     return f'/repos/{owner}/{repo}/pulls'
 
@@ -174,7 +177,11 @@ def _request(user, endpoint: str, method: str, params: dict[Any, Any] | None = N
 
 def get_user(user) -> GitHubUser | None:
     try:
-        payload = _request(user=user, endpoint=CURRENT_AUTH_USER, method='GET')
+        payload = _request(
+            user=user,
+            endpoint=CURRENT_AUTH_USER,
+            method='GET'
+        )
     except (GitHubNoTokenException, GitHubJSONException):
         raise
 
@@ -197,6 +204,35 @@ def get_user(user) -> GitHubUser | None:
     return None
 
 
+def _upsert_repo_from_payload(repo_payload, github_owner):
+    with transaction.atomic():
+        github_repo_id = repo_payload['id']
+
+        obj, created = GitHubRepo.objects.update_or_create(
+            github_repo_id=github_repo_id,
+            defaults={
+                'owner': github_owner,
+                'github_owner_id': repo_payload['owner']['id'],
+                'github_owner_login': repo_payload['owner']['login'],
+                'name': repo_payload['name'],
+                'full_name': repo_payload['full_name'],
+                'private': repo_payload['private'],
+                'html_url': repo_payload['html_url'],
+                'description': repo_payload['description'],
+                'language': repo_payload['language'],
+                'archived': repo_payload['archived'],
+                'forks_count': repo_payload['forks_count'],
+                'stargazers_count': repo_payload['stargazers_count'],
+                'open_issues_count': repo_payload['open_issues_count'],
+                'created_at': parse_datetime(repo_payload['created_at']) if repo_payload['created_at'] else None,
+                'updated_at': parse_datetime(repo_payload['updated_at']) if repo_payload['updated_at'] else None,
+                'pushed_at': parse_datetime(repo_payload['pushed_at']) if repo_payload['pushed_at'] else None
+            }
+        )
+
+    return obj, created
+
+
 def get_repos(
         user,
         type: str = 'all',
@@ -214,40 +250,23 @@ def get_repos(
     )
 
     try:
-        payload = _request(user=user, endpoint=CURRENT_AUTH_USER_REPOS, params=params, method='GET')
+        payload = _request(
+            user=user,
+            endpoint=CURRENT_AUTH_USER_REPOS,
+            params=params, method='GET'
+        )
     except (GitHubNoTokenException, GitHubJSONException):
         raise
 
     if payload:
         dct = []
         github_owner = GitHubUser.objects.get(profile_owner=user)
-        with transaction.atomic():
-            for repo in payload:
-                github_repo_id = repo['id']
-
-                obj, created = GitHubRepo.objects.update_or_create(
-                    github_repo_id=github_repo_id,
-                    defaults={
-                        'owner': github_owner,
-                        'github_owner_id': repo['owner']['id'],
-                        'github_owner_login': repo['owner']['login'],
-                        'name': repo['name'],
-                        'full_name': repo['full_name'],
-                        'private': repo['private'],
-                        'html_url': repo['html_url'],
-                        'description': repo['description'],
-                        'language': repo['language'],
-                        'archived': repo['archived'],
-                        'forks_count': repo['forks_count'],
-                        'stargazers_count': repo['stargazers_count'],
-                        'open_issues_count': repo['open_issues_count'],
-                        'created_at': parse_datetime(repo['created_at']) if repo['created_at'] else None,
-                        'updated_at': parse_datetime(repo['updated_at']) if repo['updated_at'] else None,
-                        'pushed_at': parse_datetime(repo['pushed_at']) if repo['pushed_at'] else None
-                    }
-                )
-
-                dct.append(obj)
+        for repo in payload:
+            obj, created = _upsert_repo_from_payload(
+                repo_payload=repo,
+                github_owner=github_owner
+            )
+            dct.append(obj)
 
         return dct
 
@@ -303,11 +322,19 @@ def _get_metrics(user):
     }
 
 
-def _get_pull_requests(user, repo):
+def _get_pull_requests(user, repo: GitHubRepo):
     params = _get_pr_params()
 
     try:
-        payload = _request(user=user, endpoint=_build_repo_endpoint(repo.owner.login, repo.name), params=params, method='GET')
+        payload = _request(
+            user=user,
+            endpoint=_build_repo_endpoint(
+                owner=repo.github_owner_login,
+                repo=repo.name
+            ),
+            params=params,
+            method='GET'
+        )
     except (GitHubNoTokenException, GitHubJSONException):
         raise
 
@@ -321,7 +348,6 @@ def _get_pull_requests(user, repo):
                 obj, created = GitHubPullRequest.objects.update_or_create(
                     github_id=github_pr_id,
                     defaults={
-                        'href': pr['url'],
                         'pr_owner_login': pr['user']['login'],
                         'pr_owner_id': pr['user']['id'],
                         'repo': repo,
@@ -344,22 +370,26 @@ def _get_pull_requests(user, repo):
 
                 dct.append(obj)
 
-                _get_reviews(user, pull_request=obj, repo=repo)
-
         return dct
 
     return []
 
 
-def _get_reviews(user, pull_request: GitHubPullRequest, repo):
+def _get_reviews(user, pull_request: GitHubPullRequest, repo: GitHubRepo):
     params = _get_reviews_params()
 
     try:
         payload = _request(
             user=user,
-            endpoint=_build_repo_endpoint(owner=repo.owner.login, repo=repo.name, review=True, pull_number=pull_request.number),
+            endpoint=_build_repo_endpoint(
+                owner=repo.github_owner_login,
+                repo=repo.name,
+                review=True,
+                pull_number=pull_request.number
+            ),
             params=params,
-            method='GET')
+            method='GET'
+        )
     except (GitHubNoTokenException, GitHubJSONException):
         raise
 
@@ -395,7 +425,16 @@ def _get_issues(user, repo: GitHubRepo):
     params = _get_issues_params()
 
     try:
-        payload = _request(user=user, endpoint=_build_repo_endpoint(owner=repo.owner.login, repo=repo.name, issues=True), params=params, method='GET')
+        payload = _request(
+            user=user,
+            endpoint=_build_repo_endpoint(
+                owner=repo.github_owner_login,
+                repo=repo.name,
+                issues=True
+            ),
+            params=params,
+            method='GET'
+        )
     except (GitHubNoTokenException, GitHubJSONException):
         raise
 
@@ -430,7 +469,46 @@ def _get_issues(user, repo: GitHubRepo):
     return []
 
 
+def synchronize_repo(user, repo_obj: GitHubRepo) -> dict[Any, Any]:
+    try:
+        repo = _request(
+            user=user,
+            endpoint=_build_repo_endpoint(
+                owner=repo_obj.github_owner_login,
+                repo=repo_obj.name,
+                single_repo=True
+            ),
+            method='GET'
+        )
 
+    except (GitHubNoTokenException, GitHubJSONException):
+        raise
+
+    if repo:
+
+        github_owner = GitHubUser.objects.get(profile_owner=user)
+
+        obj, created = _upsert_repo_from_payload(
+            repo_payload=repo,
+            github_owner=github_owner
+        )
+
+        pull_requests = _get_pull_requests(user=user, repo=obj)
+        pull_requests_count = len(pull_requests)
+
+        reviews_count = 0
+        for request in pull_requests:
+           reviews_count += len(_get_reviews(user=user, pull_request=request, repo=obj))
+        issues_count = len(_get_issues(user=user, repo=obj))
+
+        return {
+            'repo': obj,
+            'pull_requests_count': pull_requests_count,
+            'issues_count': issues_count,
+            'reviews_count': reviews_count
+        }
+
+    return {}
 
 
 
