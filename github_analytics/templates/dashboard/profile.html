@@ -74,16 +74,16 @@
 
     <div class="app-card mb-4">
         <div class="card-body p-3 p-md-4">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
                 <div>
                     <h2 class="h6 mb-1">Репозитории</h2>
-                    <p class="app-muted small mb-0">Фильтрация не меняет страницу, только набор отображаемых репозиториев.</p>
+                    <p class="app-muted small mb-0">Фильтрация меняет только набор отображаемых репозиториев.</p>
                 </div>
                 <div class="d-flex flex-wrap gap-2 filter-bar">
-                    <a href="{% url 'dashboard-profile' %}" class="btn btn-outline-dark btn-sm">All</a>
-                    <a href="{% url 'dashboard-profile' %}?visibility=public" class="btn btn-outline-dark btn-sm">Public</a>
-                    <a href="{% url 'dashboard-profile' %}?visibility=private" class="btn btn-outline-dark btn-sm">Private</a>
-                    <a href="{% url 'dashboard-profile' %}?affiliation=collaborator" class="btn btn-outline-dark btn-sm">Collaborator</a>
+                    <a href="{% url 'dashboard-profile' %}" class="btn btn-sm {% if active_repo_filter == 'all' %}btn-dark{% else %}btn-outline-dark{% endif %}">All</a>
+                    <a href="{% url 'dashboard-profile' %}?visibility=public" class="btn btn-sm {% if active_repo_filter == 'public' %}btn-dark{% else %}btn-outline-dark{% endif %}">Public</a>
+                    <a href="{% url 'dashboard-profile' %}?visibility=private" class="btn btn-sm {% if active_repo_filter == 'private' %}btn-dark{% else %}btn-outline-dark{% endif %}">Private</a>
+                    <a href="{% url 'dashboard-profile' %}?affiliation=collaborator" class="btn btn-sm {% if active_repo_filter == 'collaborator' %}btn-dark{% else %}btn-outline-dark{% endif %}">Collaborator</a>
                 </div>
             </div>
         </div>
