@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
-from .services import get_repos, get_user, sync_all, _get_metrics
-from django.http import JsonResponse, HttpResponseNotAllowed
+from django.shortcuts import render, redirect, get_object_or_404
+from .services import get_repos, get_user, sync_all, _get_metrics, synchronize_repo
+from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.forms.models import model_to_dict
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from integrations.models import GitHubRepo, GitHubUser
 
 
 @require_POST
@@ -45,4 +46,16 @@ def sync_all_view(request):
 
     else:
         return HttpResponseNotAllowed(["GET", "POST"])
+
+@require_POST
+def sync_repo_view(request, repo_pk):
+    profile_owner = GitHubUser.objects.get(profile_owner=request.user)
+    
+    repo_obj = get_object_or_404(GitHubRepo, owner=profile_owner, id=repo_pk)
+    synchronize_repo(request.user, repo_obj)
+    messages.success(request, 'Синхронизировано!')
+
+    return redirect('dashboard_repo_detail', pk=repo_pk)
+
+
 
