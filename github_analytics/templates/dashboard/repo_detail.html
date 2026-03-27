@@ -83,7 +83,7 @@
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-3 px-3">
                                     <p class="small app-muted mb-1">Total PRs</p>
-                                    <p class="stat-value mb-0">{{ basic_mertics.total_prs|default:0 }}</p>
+                                    <p class="stat-value mb-0">{{ basic_metrics.total_prs|default:0 }}</p>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +131,64 @@
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-3 px-3">
                                     <p class="small app-muted mb-1">Avg Reviews per PR</p>
-                                    <p class="stat-value mb-0">{{ basic_metrics.avg_reviews_rep_pr|default:0 }}</p>
+                                    <p class="stat-value mb-0">{{ basic_metrics.avg_reviews_per_pr|default:0|floatformat:1 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-card mb-4" style="border-color: #d7dce3; box-shadow: 0 16px 38px rgba(15, 23, 42, 0.06);">
+        <div class="card-body p-3 p-md-4">
+            <div class="d-flex flex-column flex-xl-row gap-3 gap-xl-4">
+                <div class="pe-xl-3" style="min-width: 16rem;">
+                    <p class="text-uppercase small app-muted fw-semibold mb-1">Analytics Panel</p>
+                    <h2 class="h5 mb-2">Issue Metrics</h2>
+                    <p class="app-muted small mb-0">Базовая issue-аналитика по текущему репозиторию. Панель показывает объем, статус и уровень обсуждения по реальным issues без PR-like объектов.</p>
+                </div>
+
+                <div class="flex-grow-1">
+                    <div class="row g-2">
+                        <div class="col-6 col-md-4 col-xl-3">
+                            <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
+                                <div class="py-3 px-3">
+                                    <p class="small app-muted mb-1">Total Issues</p>
+                                    <p class="stat-value mb-0">{{ basic_issues_metrics.total_issues|default:0 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-xl-3">
+                            <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
+                                <div class="py-3 px-3">
+                                    <p class="small app-muted mb-1">Open Issues</p>
+                                    <p class="stat-value mb-0">{{ basic_issues_metrics.open_issues|default:0 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-xl-3">
+                            <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
+                                <div class="py-3 px-3">
+                                    <p class="small app-muted mb-1">Closed Issues</p>
+                                    <p class="stat-value mb-0">{{ basic_issues_metrics.closed_issues|default:0 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-xl-3">
+                            <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
+                                <div class="py-3 px-3">
+                                    <p class="small app-muted mb-1">Issues with Comments</p>
+                                    <p class="stat-value mb-0">{{ basic_issues_metrics.issues_with_comments|default:0 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
+                                <div class="py-3 px-3">
+                                    <p class="small app-muted mb-1">Avg Comments per Issue</p>
+                                    <p class="stat-value mb-0">{{ basic_issues_metrics.avg_comments_per_issue|default:0|floatformat:1 }}</p>
                                 </div>
                             </div>
                         </div>

@@ -442,6 +442,10 @@ def _get_issues(user, repo: GitHubRepo):
         dct = []
         with transaction.atomic():
             for issue in payload:
+
+                if 'pull_request' in issue:
+                    continue
+
                 github_id = issue['id']
 
                 obj, created = GitHubIssue.objects.update_or_create(
