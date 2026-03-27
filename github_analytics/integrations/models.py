@@ -65,7 +65,8 @@ class GitHubPullRequest(models.Model):
 class GitHubPRReview(models.Model):
     pull_request = models.ForeignKey(
         GitHubPullRequest,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='reviews'
     )
     github_id = models.PositiveBigIntegerField(null=False, unique=True)
     reviewer_id = models.PositiveBigIntegerField(null=False)
