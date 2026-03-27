@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 import integrations.models as integration_models
 from integrations.services import _get_metrics
 from django.views.decorators.http import require_GET
+from analytics.services import get_basic_metrics
 
 
 @require_GET
@@ -43,8 +44,11 @@ def profile_view(request):
 def repo_detail_view(request, pk):
     repo = integration_models.GitHubRepo.objects.get(id=pk)
 
+    basic_metrics = get_basic_metrics(repo)
+
     context = {
-        'repo': repo
+        'repo': repo,
+        'basic_metrics': basic_metrics
     }
 
     return render(request, 'dashboard/repo_detail.html', context=context)
