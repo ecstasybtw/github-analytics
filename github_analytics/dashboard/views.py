@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 import integrations.models as integration_models
 from integrations.services import _get_metrics
 from django.views.decorators.http import require_GET
-from analytics.services import get_basic_metrics, get_basic_issues_metrics
+from analytics.services import get_basic_metrics, get_basic_issues_metrics, basic_comparison
 
 
 @require_GET
@@ -46,11 +46,16 @@ def repo_detail_view(request, pk):
 
     basic_metrics = get_basic_metrics(repo)
     basic_issues_metrics = get_basic_issues_metrics(repo)
+    basic_comparison_metrics = basic_comparison(
+        basic_metrics=basic_metrics,
+        basic_issues_metrics=basic_issues_metrics
+    )
 
     context = {
         'repo': repo,
         'basic_metrics': basic_metrics,
-        'basic_issues_metrics': basic_issues_metrics
+        'basic_issues_metrics': basic_issues_metrics,
+        'basic_comparison_metrics': basic_comparison_metrics
     }
 
     return render(request, 'dashboard/repo_detail.html', context=context)

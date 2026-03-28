@@ -116,4 +116,17 @@ def get_basic_issues_metrics(repo: integration_models.GitHubRepo) -> dict[Any, A
     }
 
 
+def basic_comparison(basic_metrics: dict, basic_issues_metrics:dict) -> dict[Any, Any]:
+    review_coverage = (basic_metrics['reviewed_prs'] / basic_metrics['total_prs'] if basic_metrics['total_prs'] else 0) * 100
+    merge_rate = (basic_metrics['merged_prs'] / basic_metrics['total_prs'] if basic_metrics['total_prs'] else 0) * 100
+    issue_discussion_rate = (basic_issues_metrics['issues_with_comments'] / basic_issues_metrics['total_issues'] if basic_issues_metrics['total_issues'] else 0) * 100
+    pr_closure_rate = (basic_metrics['closed_prs'] / basic_metrics['total_prs'] if basic_metrics['total_prs'] else 0) * 100
+
+    return {
+        'review_coverage': review_coverage,
+        'merge_rate': merge_rate,
+        'issue_discussion_rate': issue_discussion_rate,
+        'pr_closure_rate': pr_closure_rate
+    }
+
 
