@@ -7,12 +7,27 @@ from analytics.services import get_basic_metrics, get_basic_issues_metrics, basi
 
 @require_GET
 def profile_view(request):
+    github_user = integration_models.GitHubUser.objects.get(profile_owner=request.user)
+
+    context = {
+        'profile': github_user,
+    }
+
+    return render(
+        request=request,
+        template_name='dashboard/profile.html',
+        context=context
+    )
+
+
+def repos_view(request):
+    github_user = integration_models.GitHubUser.objects.get(profile_owner=request.user)
     filter_param = request.GET.get('visibility')
     affiliation_param = request.GET.get('affiliation')
     active_repo_filter = 'all'
 
-    github_user = integration_models.GitHubUser.objects.get(profile_owner=request.user)
     repos = integration_models.GitHubRepo.objects.filter(owner=github_user).order_by('-updated_at', 'name')
+    metrics = _get_metrics(request.user)
 
     if filter_param == 'private':
         repos = repos.filter(private=True)
@@ -25,10 +40,7 @@ def profile_view(request):
         repos = repos.exclude(github_owner_id=github_user.github_user_id)
         active_repo_filter = 'collaborator'
 
-    metrics = _get_metrics(request.user)
-
     context = {
-        'profile': github_user,
         'repos': repos,
         'metrics': metrics,
         'active_repo_filter': active_repo_filter,
@@ -36,7 +48,7 @@ def profile_view(request):
 
     return render(
         request=request,
-        template_name='dashboard/profile.html',
+        template_name='dashboard/repositories.html',
         context=context
     )
 

@@ -6,7 +6,7 @@
         <div>
             <p class="text-uppercase small app-muted fw-semibold mb-2">Overview</p>
             <h1 class="h3 mb-1">Профиль GitHub</h1>
-            <p class="app-muted mb-0">Подключенный аккаунт и список синхронизированных репозиториев.</p>
+            <p class="app-muted mb-0">Подключенный аккаунт GitHub и краткая информация о профиле.</p>
         </div>
     </div>
 
@@ -27,102 +27,6 @@
                 </form>
             </div>
         </div>
-    </div>
-
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-4 col-xl-2">
-            <div class="app-card h-100">
-                <div class="card-body">
-                    <p class="small app-muted mb-1">Repositories</p>
-                    <p class="stat-value mb-0">{{ metrics.repos_count }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-4 col-xl-2">
-            <div class="app-card h-100">
-                <div class="card-body">
-                    <p class="small app-muted mb-1">Stars</p>
-                    <p class="stat-value mb-0">{{ metrics.stars_count }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-4 col-xl-2">
-            <div class="app-card h-100">
-                <div class="card-body">
-                    <p class="small app-muted mb-1">Forks</p>
-                    <p class="stat-value mb-0">{{ metrics.forks_count }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-4 col-xl-3">
-            <div class="app-card h-100">
-                <div class="card-body">
-                    <p class="small app-muted mb-1">Open Issues</p>
-                    <p class="stat-value mb-0">{{ metrics.open_issues_count }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-8 col-xl-3">
-            <div class="app-card h-100">
-                <div class="card-body">
-                    <p class="small app-muted mb-1">Last Repo Update</p>
-                    <p class="mb-0 fw-semibold">{{ metrics.last_pushed_repo_at|default:"-" }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="app-card mb-4">
-        <div class="card-body p-3 p-md-4">
-            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-                <div>
-                    <h2 class="h6 mb-1">Репозитории</h2>
-                    <p class="app-muted small mb-0">Фильтрация меняет только набор отображаемых репозиториев.</p>
-                </div>
-                <div class="d-flex flex-wrap gap-2 filter-bar">
-                    <a href="{% url 'dashboard-profile' %}" class="btn btn-sm {% if active_repo_filter == 'all' %}btn-dark{% else %}btn-outline-dark{% endif %}">All</a>
-                    <a href="{% url 'dashboard-profile' %}?visibility=public" class="btn btn-sm {% if active_repo_filter == 'public' %}btn-dark{% else %}btn-outline-dark{% endif %}">Public</a>
-                    <a href="{% url 'dashboard-profile' %}?visibility=private" class="btn btn-sm {% if active_repo_filter == 'private' %}btn-dark{% else %}btn-outline-dark{% endif %}">Private</a>
-                    <a href="{% url 'dashboard-profile' %}?affiliation=collaborator" class="btn btn-sm {% if active_repo_filter == 'collaborator' %}btn-dark{% else %}btn-outline-dark{% endif %}">Collaborator</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row g-3">
-        {% for repo in repos %}
-            <div class="col-12 col-md-6 col-xl-4">
-                <a href="{% url 'dashboard_repo_detail' repo.id %}" class="text-decoration-none text-dark d-block h-100">
-                    <div class="app-card repo-card h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h2 class="h6 mb-0">{{ repo.name }}</h2>
-                                {% if repo.private %}
-                                    <span class="badge bg-dark">Private</span>
-                                {% else %}
-                                    <span class="badge bg-success">Public</span>
-                                {% endif %}
-                            </div>
-                            <p class="small app-muted mb-2">{{ repo.full_name }}</p>
-                            <p class="small mb-3 app-muted" style="min-height: 2.75rem;">{{ repo.description|default:"No description." }}</p>
-                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                <span class="badge bg-light text-dark">Stars: {{ repo.stargazers_count }}</span>
-                                <span class="badge bg-light text-dark">Forks: {{ repo.forks_count }}</span>
-                                <span class="badge bg-light text-dark">Issues: {{ repo.open_issues_count }}</span>
-                            </div>
-                            <p class="small app-muted mb-1">Language: {{ repo.language|default:"-" }}</p>
-                            <p class="small app-muted mb-0">Updated: {{ repo.updated_at }}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        {% empty %}
-            <div class="col-12">
-                <div class="alert alert-secondary mb-0">
-                    Пока нет репо. Нажмите <strong>Синхронизировать</strong> чтобы загрузить их.
-                </div>
-            </div>
-        {% endfor %}
     </div>
 </div>
 {% endblock %}
