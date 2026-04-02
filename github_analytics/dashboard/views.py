@@ -19,7 +19,7 @@ def profile_view(request):
         context=context
     )
 
-
+@require_GET
 def repos_view(request):
     github_user = integration_models.GitHubUser.objects.get(profile_owner=request.user)
     filter_param = request.GET.get('visibility')

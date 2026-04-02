@@ -56,10 +56,6 @@ class GitHubPullRequest(models.Model):
     closed_at = models.DateTimeField(null=True)
     merged_at = models.DateTimeField(null=True)
     draft = models.BooleanField()
-    additions = models.IntegerField()
-    deletions = models.IntegerField()
-    changed_files = models.IntegerField()
-    commits = models.IntegerField()
 
 
 class GitHubPRReview(models.Model):

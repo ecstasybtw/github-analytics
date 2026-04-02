@@ -361,10 +361,6 @@ def _get_pull_requests(user, repo: GitHubRepo):
                         'closed_at': parse_datetime(pr['closed_at']) if pr['closed_at'] else None,
                         'merged_at': parse_datetime(pr['merged_at']) if pr['merged_at'] else None,
                         'draft': pr['draft'],
-                        'additions': pr['additions'],
-                        'deletions': pr['deletions'],
-                        'changed_files': pr['changed_files'],
-                        'commits': pr['commits']
                     }
                 )
 
