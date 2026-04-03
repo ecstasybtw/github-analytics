@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 import integrations.models as integration_models
 from integrations.services import _get_metrics
 from django.views.decorators.http import require_GET
@@ -54,7 +54,10 @@ def repos_view(request):
 
 
 def repo_detail_view(request, pk):
-    repo = integration_models.GitHubRepo.objects.get(id=pk)
+    profile_owner = integration_models.GitHubUser.objects.get(profile_owner=request.user)
+
+    repo = get_object_or_404(integration_models.GitHubRepo, owner=profile_owner, id=pk)
+
 
     basic_metrics = get_basic_metrics(repo)
     basic_issues_metrics = get_basic_issues_metrics(repo)

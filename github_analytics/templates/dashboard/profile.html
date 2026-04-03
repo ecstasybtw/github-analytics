@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Profile{% endblock %}
+{% block title %}Профиль{% endblock %}
 {% block content %}
 <div class="container py-4 app-section">
     <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3 mb-4">
         <div>
-            <p class="text-uppercase small app-muted fw-semibold mb-2">Overview</p>
+            <p class="text-uppercase small app-muted fw-semibold mb-2">Обзор</p>
             <h1 class="h3 mb-1">Профиль GitHub</h1>
             <p class="app-muted mb-0">Подключенный аккаунт GitHub и краткая информация о профиле.</p>
         </div>
@@ -14,11 +14,11 @@
         <div class="card-body p-4 p-md-5">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3">
                 <div class="d-flex flex-column flex-sm-row align-items-sm-start gap-3 gap-md-4">
-                    <img src="{{ profile.avatar_url }}" class="rounded-circle d-block border" style="width: 88px; height: 88px; object-fit: cover;" alt="Avatar">
+                    <img src="{{ profile.avatar_url }}" class="rounded-circle d-block border" style="width: 88px; height: 88px; object-fit: cover;" alt="Аватар">
                     <div>
                         <h2 class="h3 mb-1">{{ profile.name|default:profile.login }}</h2>
                         <p class="app-muted mb-2">@{{ profile.login }}</p>
-                        <p class="mb-0 app-muted" style="max-width: 44rem;">{{ profile.bio|default:"No bio yet." }}</p>
+                        <p class="mb-0 app-muted" style="max-width: 44rem;">{{ profile.bio|default:"Биография пока не заполнена." }}</p>
                     </div>
                 </div>
                 <form method="post" action="{% url 'integrations_sync_all' %}" class="align-self-start">

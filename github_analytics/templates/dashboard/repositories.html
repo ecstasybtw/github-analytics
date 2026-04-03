@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Repositories{% endblock %}
+{% block title %}Репозитории{% endblock %}
 {% block content %}
 <div class="container py-4 app-section">
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-4 col-xl-2">
             <div class="app-card h-100">
                 <div class="card-body">
-                    <p class="small app-muted mb-1">Repositories</p>
+                    <p class="small app-muted mb-1">Репозитории</p>
                     <p class="stat-value mb-0">{{ metrics.repos_count }}</p>
                 </div>
             </div>
@@ -14,7 +14,7 @@
         <div class="col-6 col-md-4 col-xl-2">
             <div class="app-card h-100">
                 <div class="card-body">
-                    <p class="small app-muted mb-1">Stars</p>
+                    <p class="small app-muted mb-1">Звезды</p>
                     <p class="stat-value mb-0">{{ metrics.stars_count }}</p>
                 </div>
             </div>
@@ -22,7 +22,7 @@
         <div class="col-6 col-md-4 col-xl-2">
             <div class="app-card h-100">
                 <div class="card-body">
-                    <p class="small app-muted mb-1">Forks</p>
+                    <p class="small app-muted mb-1">Форки</p>
                     <p class="stat-value mb-0">{{ metrics.forks_count }}</p>
                 </div>
             </div>
@@ -30,7 +30,7 @@
         <div class="col-6 col-md-4 col-xl-3">
             <div class="app-card h-100">
                 <div class="card-body">
-                    <p class="small app-muted mb-1">Open Issues</p>
+                    <p class="small app-muted mb-1">Открытые Issues</p>
                     <p class="stat-value mb-0">{{ metrics.open_issues_count }}</p>
                 </div>
             </div>
@@ -38,7 +38,7 @@
         <div class="col-12 col-md-8 col-xl-3">
             <div class="app-card h-100">
                 <div class="card-body">
-                    <p class="small app-muted mb-1">Last Repo Update</p>
+                    <p class="small app-muted mb-1">Последнее обновление репозитория</p>
                     <p class="mb-0 fw-semibold">{{ metrics.last_pushed_repo_at|default:"-" }}</p>
                 </div>
             </div>
@@ -53,10 +53,10 @@
                     <p class="app-muted small mb-0">Фильтрация меняет только набор отображаемых репозиториев.</p>
                 </div>
                 <div class="d-flex flex-wrap gap-2 filter-bar">
-                    <a href="{% url 'dashboard-repositories' %}" class="btn btn-sm {% if active_repo_filter == 'all' %}btn-dark{% else %}btn-outline-dark{% endif %}">All</a>
-                    <a href="{% url 'dashboard-repositories' %}?visibility=public" class="btn btn-sm {% if active_repo_filter == 'public' %}btn-dark{% else %}btn-outline-dark{% endif %}">Public</a>
-                    <a href="{% url 'dashboard-repositories' %}?visibility=private" class="btn btn-sm {% if active_repo_filter == 'private' %}btn-dark{% else %}btn-outline-dark{% endif %}">Private</a>
-                    <a href="{% url 'dashboard-repositories' %}?affiliation=collaborator" class="btn btn-sm {% if active_repo_filter == 'collaborator' %}btn-dark{% else %}btn-outline-dark{% endif %}">Collaborator</a>
+                    <a href="{% url 'dashboard-repositories' %}" class="btn btn-sm {% if active_repo_filter == 'all' %}btn-dark{% else %}btn-outline-dark{% endif %}">Все</a>
+                    <a href="{% url 'dashboard-repositories' %}?visibility=public" class="btn btn-sm {% if active_repo_filter == 'public' %}btn-dark{% else %}btn-outline-dark{% endif %}">Публичные</a>
+                    <a href="{% url 'dashboard-repositories' %}?visibility=private" class="btn btn-sm {% if active_repo_filter == 'private' %}btn-dark{% else %}btn-outline-dark{% endif %}">Приватные</a>
+                    <a href="{% url 'dashboard-repositories' %}?affiliation=collaborator" class="btn btn-sm {% if active_repo_filter == 'collaborator' %}btn-dark{% else %}btn-outline-dark{% endif %}">Коллаборатор</a>
                 </div>
             </div>
         </div>
@@ -71,20 +71,20 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h2 class="h6 mb-0">{{ repo.name }}</h2>
                                 {% if repo.private %}
-                                    <span class="badge bg-dark">Private</span>
+                                    <span class="badge bg-dark">Приватный</span>
                                 {% else %}
-                                    <span class="badge bg-success">Public</span>
+                                    <span class="badge bg-success">Публичный</span>
                                 {% endif %}
                             </div>
                             <p class="small app-muted mb-2">{{ repo.full_name }}</p>
-                            <p class="small mb-3 app-muted" style="min-height: 2.75rem;">{{ repo.description|default:"No description." }}</p>
+                            <p class="small mb-3 app-muted" style="min-height: 2.75rem;">{{ repo.description|default:"Описание отсутствует." }}</p>
                             <div class="d-flex flex-wrap gap-2 mb-3">
-                                <span class="badge bg-light text-dark">Stars: {{ repo.stargazers_count }}</span>
-                                <span class="badge bg-light text-dark">Forks: {{ repo.forks_count }}</span>
+                                <span class="badge bg-light text-dark">Звезды: {{ repo.stargazers_count }}</span>
+                                <span class="badge bg-light text-dark">Форки: {{ repo.forks_count }}</span>
                                 <span class="badge bg-light text-dark">Issues: {{ repo.open_issues_count }}</span>
                             </div>
-                            <p class="small app-muted mb-1">Language: {{ repo.language|default:"-" }}</p>
-                            <p class="small app-muted mb-0">Updated: {{ repo.updated_at }}</p>
+                            <p class="small app-muted mb-1">Язык: {{ repo.language|default:"-" }}</p>
+                            <p class="small app-muted mb-0">Обновлен: {{ repo.updated_at }}</p>
                         </div>
                     </div>
                 </a>
@@ -92,7 +92,7 @@
         {% empty %}
             <div class="col-12">
                 <div class="alert alert-secondary mb-0">
-                    Пока нет репо. Нажмите <strong>Синхронизировать</strong> чтобы загрузить их.
+                    Пока нет репо. Перейдите на страницу профиля и нажмите <strong>Синхронизировать</strong> чтобы загрузить их.
                 </div>
             </div>
         {% endfor %}

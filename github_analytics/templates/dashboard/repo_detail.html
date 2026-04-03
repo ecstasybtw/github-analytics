@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container py-4 app-section">
     <div class="mb-4">
-        <a href="{% url 'dashboard-profile' %}" class="btn btn-outline-secondary btn-sm">&larr; Back to profile</a>
+        <a href="{% url 'dashboard-repositories' %}" class="btn btn-outline-secondary btn-sm">&larr; Назад к списку репо</a>
     </div>
 
     <div class="app-card mb-4">
@@ -14,20 +14,20 @@
                     <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
                         <h1 class="h4 mb-0">{{ repo.name }}</h1>
                         {% if repo.private %}
-                            <span class="badge bg-dark">Private</span>
+                            <span class="badge bg-dark">Приватный</span>
                         {% else %}
-                            <span class="badge bg-success">Public</span>
+                            <span class="badge bg-success">Публичный</span>
                         {% endif %}
                     </div>
                     <p class="app-muted small mb-2">{{ repo.full_name }}</p>
-                    <p class="mb-0 app-muted small" style="max-width: 40rem;">{{ repo.description|default:"No description." }}</p>
+                    <p class="mb-0 app-muted small" style="max-width: 40rem;">{{ repo.description|default:"Описание отсутствует." }}</p>
                 </div>
                 <div class="d-flex flex-wrap gap-2">
                     <form method="post" action="{% url 'integrations_sync_repo' repo_pk=repo.id %}" class="align-self-start">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-dark px-4">Синхронизировать</button>
                     </form>
-                    <a href="{{ repo.html_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-dark btn-sm px-3">Open on GitHub</a>
+                    <a href="{{ repo.html_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-dark btn-sm px-3">Открыть на GitHub</a>
                 </div>
             </div>
         </div>
@@ -37,7 +37,7 @@
         <div class="col-6 col-md-3">
             <div class="app-card h-100">
                 <div class="card-body py-3 px-3">
-                    <p class="small app-muted mb-1">Stars</p>
+                    <p class="small app-muted mb-1">Звезды</p>
                     <p class="stat-value mb-0">{{ repo.stargazers_count }}</p>
                 </div>
             </div>
@@ -45,7 +45,7 @@
         <div class="col-6 col-md-3">
             <div class="app-card h-100">
                 <div class="card-body py-3 px-3">
-                    <p class="small app-muted mb-1">Forks</p>
+                    <p class="small app-muted mb-1">Форки</p>
                     <p class="stat-value mb-0">{{ repo.forks_count }}</p>
                 </div>
             </div>
@@ -53,7 +53,7 @@
         <div class="col-6 col-md-3">
             <div class="app-card h-100">
                 <div class="card-body py-3 px-3">
-                    <p class="small app-muted mb-1">Open Issues</p>
+                    <p class="small app-muted mb-1">Открытые Issues</p>
                     <p class="stat-value mb-0">{{ repo.open_issues_count }}</p>
                 </div>
             </div>
@@ -61,7 +61,7 @@
         <div class="col-6 col-md-3">
             <div class="app-card h-100">
                 <div class="card-body py-3 px-3">
-                    <p class="small app-muted mb-1">Language</p>
+                    <p class="small app-muted mb-1">Язык</p>
                     <p class="stat-value mb-0">{{ repo.language|default:"-" }}</p>
                 </div>
             </div>
@@ -73,16 +73,16 @@
             <div class="app-card h-100" style="border-color: #d7dce3; box-shadow: 0 16px 38px rgba(15, 23, 42, 0.06);">
                 <div class="card-body p-3">
                     <div class="mb-3">
-                        <p class="text-uppercase small app-muted fw-semibold mb-1">Analytics Panel</p>
-                        <h2 class="h6 mb-1">PR / Review Metrics</h2>
-                        <p class="app-muted small mb-0">Ядро аналитики по engineering process для текущего репозитория.</p>
+                        <p class="text-uppercase small app-muted fw-semibold mb-1">Панель аналитики</p>
+                        <h2 class="h6 mb-1">Метрики PR и ревью</h2>
+                        <p class="app-muted small mb-0">Ядро аналитики по инженерному процессу для текущего репозитория.</p>
                     </div>
 
                     <div class="row g-2">
                         <div class="col-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Total PRs</p>
+                                    <p class="small app-muted mb-1">Всего PR</p>
                                     <p class="stat-value mb-0">{{ basic_metrics.total_prs|default:0 }}</p>
                                 </div>
                             </div>
@@ -90,7 +90,7 @@
                         <div class="col-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Open PRs</p>
+                                    <p class="small app-muted mb-1">Открытые PR</p>
                                     <p class="stat-value mb-0">{{ basic_metrics.open_prs|default:0 }}</p>
                                 </div>
                             </div>
@@ -98,7 +98,7 @@
                         <div class="col-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Merged PRs</p>
+                                    <p class="small app-muted mb-1">Слитые PR</p>
                                     <p class="stat-value mb-0">{{ basic_metrics.merged_prs|default:0 }}</p>
                                 </div>
                             </div>
@@ -106,7 +106,7 @@
                         <div class="col-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Closed PRs</p>
+                                    <p class="small app-muted mb-1">Закрытые PR</p>
                                     <p class="stat-value mb-0">{{ basic_metrics.closed_prs|default:0 }}</p>
                                 </div>
                             </div>
@@ -114,7 +114,7 @@
                         <div class="col-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Total Reviews</p>
+                                    <p class="small app-muted mb-1">Всего ревью</p>
                                     <p class="stat-value mb-0">{{ basic_metrics.total_reviews|default:0 }}</p>
                                 </div>
                             </div>
@@ -122,7 +122,7 @@
                         <div class="col-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Reviewed PRs</p>
+                                    <p class="small app-muted mb-1">PR с ревью</p>
                                     <p class="stat-value mb-0">{{ basic_metrics.reviewed_prs|default:0 }}</p>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                         <div class="col-12">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Avg Reviews per PR</p>
+                                    <p class="small app-muted mb-1">Среднее число ревью на PR</p>
                                     <p class="stat-value mb-0">{{ basic_metrics.avg_reviews_per_pr|default:0|floatformat:1 }}</p>
                                 </div>
                             </div>
@@ -143,16 +143,16 @@
             <div class="app-card h-100" style="border-color: #d7dce3; box-shadow: 0 16px 38px rgba(15, 23, 42, 0.06);">
                 <div class="card-body p-3">
                     <div class="mb-3">
-                        <p class="text-uppercase small app-muted fw-semibold mb-1">Analytics Panel</p>
-                        <h2 class="h6 mb-1">Issue Metrics</h2>
-                        <p class="app-muted small mb-0">Базовая issue-аналитика по текущему репозиторию без PR-like объектов.</p>
+                        <p class="text-uppercase small app-muted fw-semibold mb-1">Панель аналитики</p>
+                        <h2 class="h6 mb-1">Метрики задач</h2>
+                        <p class="app-muted small mb-0">Базовая аналитика Issues по текущему репозиторию без объектов pull request.</p>
                     </div>
 
                     <div class="row g-2">
                         <div class="col-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Total Issues</p>
+                                    <p class="small app-muted mb-1">Всего Issues</p>
                                     <p class="stat-value mb-0">{{ basic_issues_metrics.total_issues|default:0 }}</p>
                                 </div>
                             </div>
@@ -160,7 +160,7 @@
                         <div class="col-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Open Issues</p>
+                                    <p class="small app-muted mb-1">Открытые Issues</p>
                                     <p class="stat-value mb-0">{{ basic_issues_metrics.open_issues|default:0 }}</p>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@
                         <div class="col-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Closed Issues</p>
+                                    <p class="small app-muted mb-1">Закрытые Issues</p>
                                     <p class="stat-value mb-0">{{ basic_issues_metrics.closed_issues|default:0 }}</p>
                                 </div>
                             </div>
@@ -176,7 +176,7 @@
                         <div class="col-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Issues with Comments</p>
+                                    <p class="small app-muted mb-1">Issues с комментариями</p>
                                     <p class="stat-value mb-0">{{ basic_issues_metrics.issues_with_comments|default:0 }}</p>
                                 </div>
                             </div>
@@ -184,7 +184,7 @@
                         <div class="col-12">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-2 px-3">
-                                    <p class="small app-muted mb-1">Avg Comments per Issue</p>
+                                    <p class="small app-muted mb-1">Среднее число комментариев на Issue</p>
                                     <p class="stat-value mb-0">{{ basic_issues_metrics.avg_comments_per_issue|default:0|floatformat:1 }}</p>
                                 </div>
                             </div>
@@ -199,9 +199,9 @@
         <div class="card-body p-3 p-md-4">
             <div class="d-flex flex-column flex-xl-row gap-3 gap-xl-4">
                 <div class="pe-xl-3" style="min-width: 16rem;">
-                    <p class="text-uppercase small app-muted fw-semibold mb-1">Comparisons</p>
-                    <h2 class="h5 mb-2">Process Ratios</h2>
-                    <p class="app-muted small mb-0">Производные метрики, которые помогают быстрее интерпретировать raw counts по PR, reviews и issues.</p>
+                    <p class="text-uppercase small app-muted fw-semibold mb-1">Сравнения</p>
+                    <h2 class="h5 mb-2">Процессные коэффициенты</h2>
+                    <p class="app-muted small mb-0">Производные метрики, которые помогают быстрее интерпретировать базовые значения по PR, ревью и задачам.</p>
                 </div>
 
                 <div class="flex-grow-1">
@@ -209,48 +209,48 @@
                         <div class="col-12 col-md-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-3 px-3">
-                                    <p class="small app-muted mb-1">Review Coverage</p>
+                                    <p class="small app-muted mb-1">Покрытие ревью</p>
                                     <p class="stat-value mb-2">{{ basic_comparison_metrics.review_coverage|default:0|floatformat:1 }}%</p>
                                     <div class="progress mb-2" style="height: 0.45rem; background-color: #edf1f5;">
                                         <div class="progress-bar bg-dark" role="progressbar" style="width: {{ basic_comparison_metrics.review_coverage|default:0|floatformat:0 }}%;" aria-valuenow="{{ basic_comparison_metrics.review_coverage|default:0|floatformat:0 }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <p class="small app-muted mb-0">{{ basic_metrics.reviewed_prs|default:0 }} of {{ basic_metrics.total_prs|default:0 }} PRs reviewed</p>
+                                    <p class="small app-muted mb-0">{{ basic_metrics.reviewed_prs|default:0 }} из {{ basic_metrics.total_prs|default:0 }} PR получили ревью</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-3 px-3">
-                                    <p class="small app-muted mb-1">Merge Rate</p>
+                                    <p class="small app-muted mb-1">Доля слияний</p>
                                     <p class="stat-value mb-2">{{ basic_comparison_metrics.merge_rate|default:0|floatformat:1 }}%</p>
                                     <div class="progress mb-2" style="height: 0.45rem; background-color: #edf1f5;">
                                         <div class="progress-bar bg-dark" role="progressbar" style="width: {{ basic_comparison_metrics.merge_rate|default:0|floatformat:0 }}%;" aria-valuenow="{{ basic_comparison_metrics.merge_rate|default:0|floatformat:0 }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <p class="small app-muted mb-0">{{ basic_metrics.merged_prs|default:0 }} of {{ basic_metrics.total_prs|default:0 }} PRs merged</p>
+                                    <p class="small app-muted mb-0">{{ basic_metrics.merged_prs|default:0 }} из {{ basic_metrics.total_prs|default:0 }} PR были смержены</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-3 px-3">
-                                    <p class="small app-muted mb-1">Issue Discussion Rate</p>
+                                    <p class="small app-muted mb-1">Доля обсуждаемых Issues</p>
                                     <p class="stat-value mb-2">{{ basic_comparison_metrics.issue_discussion_rate|default:0|floatformat:1 }}%</p>
                                     <div class="progress mb-2" style="height: 0.45rem; background-color: #edf1f5;">
                                         <div class="progress-bar bg-dark" role="progressbar" style="width: {{ basic_comparison_metrics.issue_discussion_rate|default:0|floatformat:0 }}%;" aria-valuenow="{{ basic_comparison_metrics.issue_discussion_rate|default:0|floatformat:0 }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <p class="small app-muted mb-0">{{ basic_issues_metrics.issues_with_comments|default:0 }} of {{ basic_issues_metrics.total_issues|default:0 }} issues have comments</p>
+                                    <p class="small app-muted mb-0">{{ basic_issues_metrics.issues_with_comments|default:0 }} из {{ basic_issues_metrics.total_issues|default:0 }} Issues имеют комментарии</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
                                 <div class="py-3 px-3">
-                                    <p class="small app-muted mb-1">PR Closure Rate</p>
+                                    <p class="small app-muted mb-1">Доля закрытых PR</p>
                                     <p class="stat-value mb-2">{{ basic_comparison_metrics.pr_closure_rate|default:0|floatformat:1 }}%</p>
                                     <div class="progress mb-2" style="height: 0.45rem; background-color: #edf1f5;">
                                         <div class="progress-bar bg-dark" role="progressbar" style="width: {{ basic_comparison_metrics.pr_closure_rate|default:0|floatformat:0 }}%;" aria-valuenow="{{ basic_comparison_metrics.pr_closure_rate|default:0|floatformat:0 }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <p class="small app-muted mb-0">{{ basic_metrics.closed_prs|default:0 }} of {{ basic_metrics.total_prs|default:0 }} PRs closed</p>
+                                    <p class="small app-muted mb-0">{{ basic_metrics.closed_prs|default:0 }} из {{ basic_metrics.total_prs|default:0 }} PR были закрыты</p>
                                 </div>
                             </div>
                         </div>
@@ -264,29 +264,29 @@
         <div class="card-body p-3 p-md-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <p class="text-uppercase small app-muted fw-semibold mb-1">Details</p>
-                    <h2 class="h5 mb-0">Repository Details</h2>
+                    <p class="text-uppercase small app-muted fw-semibold mb-1">Детали</p>
+                    <h2 class="h5 mb-0">Детали репозитория</h2>
                 </div>
             </div>
             <div class="row g-3">
                 <div class="col-md-4">
-                    <p class="small app-muted mb-1">Created At</p>
+                    <p class="small app-muted mb-1">Создан</p>
                     <p class="mb-0">{{ repo.created_at }}</p>
                 </div>
                 <div class="col-md-4">
-                    <p class="small app-muted mb-1">Updated At</p>
+                    <p class="small app-muted mb-1">Обновлен</p>
                     <p class="mb-0">{{ repo.updated_at }}</p>
                 </div>
                 <div class="col-md-4">
-                    <p class="small app-muted mb-1">Last Push</p>
+                    <p class="small app-muted mb-1">Последний пуш</p>
                     <p class="mb-0">{{ repo.pushed_at }}</p>
                 </div>
                 <div class="col-md-4">
-                    <p class="small app-muted mb-1">Archived</p>
-                    <p class="mb-0">{% if repo.archived %}Yes{% else %}No{% endif %}</p>
+                    <p class="small app-muted mb-1">Архивирован</p>
+                    <p class="mb-0">{% if repo.archived %}Да{% else %}Нет{% endif %}</p>
                 </div>
                 <div class="col-md-4">
-                    <p class="small app-muted mb-1">GitHub Repo ID</p>
+                    <p class="small app-muted mb-1">GitHub ID репозитория</p>
                     <p class="mb-0">{{ repo.github_repo_id }}</p>
                 </div>
             </div>
