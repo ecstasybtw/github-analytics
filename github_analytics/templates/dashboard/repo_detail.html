@@ -260,6 +260,48 @@
         </div>
     </div>
 
+    <div class="app-card mb-4" style="border-color: #d7dce3; box-shadow: 0 16px 38px rgba(15, 23, 42, 0.06);">
+        <div class="card-body p-3 p-md-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <p class="text-uppercase small app-muted fw-semibold mb-1">Insights</p>
+                    <h2 class="h5 mb-1">Сигналы процесса</h2>
+                    <p class="app-muted small mb-0">Короткие наблюдения по данным текущего репозитория.</p>
+                </div>
+            </div>
+
+            {% if insights %}
+                <div class="row g-3">
+                    {% for insight in insights %}
+                        <div class="col-12 col-lg-6">
+                            <div class="h-100 rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
+                                <div class="p-3">
+                                    <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                                        <h3 class="h6 mb-0">{{ insight.title }}</h3>
+                                        {% if insight.severity == 'high' %}
+                                            <span class="badge bg-danger">High</span>
+                                        {% elif insight.severity == 'medium' %}
+                                            <span class="badge bg-warning text-dark">Medium</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Low</span>
+                                        {% endif %}
+                                    </div>
+                                    <p class="small app-muted mb-0">{{ insight.message }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="rounded-3 border bg-light" style="border-color: #e3e7ed !important;">
+                    <div class="p-3">
+                        <p class="small app-muted mb-0">Явных сигналов не обнаружено.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
     <div class="app-card">
         <div class="card-body p-3 p-md-4">
             <div class="d-flex justify-content-between align-items-center mb-3">

@@ -130,3 +130,58 @@ def basic_comparison(basic_metrics: dict, basic_issues_metrics:dict) -> dict[Any
     }
 
 
+def get_rule_based_insights(
+        basic_metrics: dict,
+        basic_issues_metrics: dict,
+        basic_comparison_metrics: dict
+) -> list[dict[str, str]]:
+
+    ls = []
+
+    if basic_metrics['total_prs'] <= 10:
+        ls.append(
+            {
+                'title': 'Недостаточно данных по PR',
+                'message': 'В репозитории слишком мало pull request, чтобы уверенно интерпретировать PR-метрики.',
+                'severity': 'medium'
+            }
+        )
+
+    if basic_metrics['total_prs'] > 0 and basic_metrics['reviewed_prs'] == 0:
+        ls.append(
+            {
+                'title': 'Нет ревью при наличии PR',
+                'message': 'pull request есть, но review-активность отсутствует.',
+                'severity': 'medium'
+            }
+        )
+
+    elif basic_metrics['total_prs'] > 0 and basic_comparison_metrics['review_coverage'] <= 30:
+        ls.append(
+            {
+                'title': 'Низкое покрытие ревью',
+                'message': 'Доля review_coverage менее 30%.',
+                'severity': 'high'
+            }
+        )
+
+
+    if  basic_comparison_metrics['merge_rate'] <= 30 and basic_metrics['total_prs'] != 0:
+        ls.append(
+            {
+                'title': 'Низкая доля merge',
+                'message': 'Более 60% pull request не доходит до merge, поэтому доля смерженных pr ниже порога в 30%.',
+                'severity': 'high'
+            }
+        )
+
+    if basic_comparison_metrics['issue_discussion_rate'] >= 70:
+        ls.append(
+            {
+                'title': 'Высокий уровень обсуждения Issues',
+                'message': 'Большая часть issues активно обсуждаются, стоит обратить на них внимание',
+                'severity': 'high'
+            }
+        )
+
+    return ls
